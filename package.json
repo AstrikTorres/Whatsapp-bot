@@ -4,7 +4,8 @@
   "description": "A bot to automate messages in whatsapp",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js"
   },
   "author": "Astrik Torres <astriktorres@gmail.com>",
   "license": "MIT",
