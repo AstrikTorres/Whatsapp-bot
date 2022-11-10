@@ -15,4 +15,10 @@ client.on('authenticated', () => {
   console.log('AUTHENTICATED');
 });
 
+client.on('ready', () => {
+  console.log('READY');
+});
+
+client.initialize();
+
 module.exports = client;
