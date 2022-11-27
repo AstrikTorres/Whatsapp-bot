@@ -130,5 +130,4 @@ dist
 .pnp.*
 
 # Session files
-.wwebjs_auth
-session.json
+.sessions

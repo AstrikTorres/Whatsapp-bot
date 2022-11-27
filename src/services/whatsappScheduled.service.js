@@ -1,6 +1,7 @@
 require('dotenv').config()
-const client = require('../utils/whatsapp-client');
+const returnClientFull = require('../utils/whatsapp-client-events');
 const whatsappScheduler = require('../utils/whatsapp-scheduler');
+const client = returnClientFull();
 
 const sendAWhatsapp = async (receiver, message, date = undefined) => {
   const req = whatsappScheduler(

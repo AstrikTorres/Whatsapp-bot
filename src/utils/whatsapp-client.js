@@ -1,31 +1,27 @@
-const { Client, LocalAuth,  } = require('whatsapp-web.js');
-const qrcode = require('qrcode-terminal');
+require("dotenv").config();
+const { Client, RemoteAuth, } = require('whatsapp-web.js');
+const { MongoStore } = require('wwebjs-mongo');
+const mongoose = require('mongoose');
 
-const client = new Client({
-  puppeteer: {
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-    ]
-  },
+const returnClient = async () => {
+  return mongoose.connect(process.env.MONGODB_URI).then(() => {
+    const store = new MongoStore({ mongoose: mongoose });
+    return new Client({
+      puppeteer: {
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+        ]
+      },
+    
+      authStrategy: new RemoteAuth({
+        backupSyncIntervalMs: 300000,
+        clientId: 'My-bot-remote',
+        store: store,
+        dataPath: './.sessions',
+      }),
+    });
+  });
+};
 
-  authStrategy: new LocalAuth({
-    clientId: 'My-bot',
-  }),
-});
-
-client.on('qr', (qr) => {
-  qrcode.generate(qr, { small: true });
-});
-
-client.on('authenticated', () => {
-  console.log('AUTHENTICATED');
-});
-
-client.on('ready', () => {
-  console.log('READY');
-});
-
-client.initialize();
-
-module.exports = client;
+module.exports = returnClient;
