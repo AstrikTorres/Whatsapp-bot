@@ -15,12 +15,13 @@ const sendMessage = async (clientWhatsapp, number, message) => {
   return messageReq;
 };
 
-const whatsappScheduler = (...args) => {
+const whatsappScheduler = async (...args) => {
   const [clientWhatsapp, number, message, date] = args;
+  const client = await clientWhatsapp.then((client) => client);
   if (date) {
-    return scheduledMessage(clientWhatsapp, number, message, date);
+    return scheduledMessage(client, number, message, date);
   }
-  return sendMessage(clientWhatsapp, number, message);
+  return sendMessage(client, number, message);
 };
 
 module.exports = whatsappScheduler;
