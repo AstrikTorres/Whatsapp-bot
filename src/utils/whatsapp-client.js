@@ -1,31 +1,50 @@
-const { Client, LocalAuth,  } = require('whatsapp-web.js');
+require("dotenv").config();
+const { Client, RemoteAuth, } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 
-const client = new Client({
-  puppeteer: {
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-    ]
-  },
+const { MongoStore } = require('wwebjs-mongo');
+const mongoose = require('mongoose');
+mongoose.set('strictQuery', false);
 
-  authStrategy: new LocalAuth({
-    clientId: 'My-bot',
-  }),
-});
+module.exports = async function initializeClient() {
+  let client = null;
+  await mongoose.connect(process.env.MONGO_HOST).then(() => {
+    console.log('Connected to MongoDB');
 
-client.on('qr', (qr) => {
-  qrcode.generate(qr, { small: true });
-});
+    const sessionStore = new MongoStore({ mongoose: mongoose });
+    client = new Client({
+      puppeteer: {
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+        ]
+      },
+      authStrategy: new RemoteAuth({
+        store: sessionStore,
+        backupSyncIntervalMs: 300000
+      })
+    });
 
-client.on('authenticated', () => {
-  console.log('AUTHENTICATED');
-});
+    client.on('qr', (qr) => {
+      qrcode.generate(qr, { small: true });
+    });
 
-client.on('ready', () => {
-  console.log('READY');
-});
+    client.on('authenticated', () => {
+      console.log('AUTHENTICATED');
+    });
 
-client.initialize();
+    client.on('ready', () => {
+      console.log('READY');
+    });
 
-module.exports = client;
+    client.on('auth_failure', () => {
+      console.log('AUTHENTICATION FAILURE');
+    });
+
+    client.on('remote_session_saved', () => {
+      console.log('REMOTE SESSION SAVED');
+    });
+    client.initialize();
+  });
+  return client;
+}  

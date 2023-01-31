@@ -27,7 +27,7 @@ services:
 
   db:
     image: mongo:latest
-    restart: unless-stopped
+    # restart: unless-stopped
     volumes:
       - mongodb-data:/data/db
 
