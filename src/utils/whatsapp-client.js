@@ -11,6 +11,8 @@ module.exports = async function getClient() {
     console.log('Connected to MongoDB');
 
     const sessionStore = new MongoStore({ mongoose: mongoose });
+    const wwebVersion = '2.2412.54';
+
     client = new Client({
       puppeteer: {
         args: [
@@ -21,7 +23,11 @@ module.exports = async function getClient() {
       authStrategy: new RemoteAuth({
         store: sessionStore,
         backupSyncIntervalMs: 300000
-      })
+      }),
+      webVersionCache: {
+        type: 'remote',
+        remotePath: `https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/${wwebVersion}.html`,
+      },
     });
   });
 
