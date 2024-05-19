@@ -1,6 +1,6 @@
 require('dotenv').config()
 const express = require('express');
-const whatsappScheduledRoute = require('./whatsappScheduled.route');
+const whatsappScheduledRoute = require('./whatsappScheduler.route');
 
 const routerApi = (app) => {
   const router = express.Router();

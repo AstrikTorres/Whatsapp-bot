@@ -1,6 +1,6 @@
 require("dotenv").config();
 const qrcode = require('qrcode-terminal');
-const getClient = require('../utils/whatsapp-client');
+const getClient = require('./client.service');
 
 const initializeClient = async () => {
   return getClient().then((client) => {
@@ -23,6 +23,10 @@ const initializeClient = async () => {
     
     client.on('remote_session_saved', () => {
       console.log('REMOTE SESSION SAVED');
+    });
+
+    client.on('message_create', () => {
+      console.log('MESSAGE CREATE');
     });
   
     client.initialize();
